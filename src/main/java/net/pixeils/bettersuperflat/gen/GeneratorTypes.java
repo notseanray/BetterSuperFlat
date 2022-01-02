@@ -16,7 +16,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Environment(EnvType.CLIENT)
 public class GeneratorTypes {
-    public static final GeneratorType BETTERSUPERFLAT = new GeneratorType("bettersuperflat") {
+    public static final GeneratorType BETTERSUPERFLAT = new GeneratorType("quaconcmp") {
                 @Override
                 protected ChunkGenerator getChunkGenerator(
                         Registry<Biome> biomeRegistry,

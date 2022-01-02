@@ -82,31 +82,30 @@ public class ChunkGenerator extends NoiseChunkGenerator {
                         region.getCenterPos().getStartX(),
                         region.getHeight() - 256,
                         region.getCenterPos().getStartZ());
-        generateChunkFloorSE(region , chunk);
 
-        if (chunk.getPos().getEndX() >= 0) {
-            if (chunk.getPos().getEndZ() >= 0) {
-                // ++
-                generateChunkFloorSE(region , chunk);
+            if (chunk.getPos().getEndX() >= 0) {
+                if (chunk.getPos().getEndZ() >= 0) {
+                    // ++
+                    generateChunkFloorSE(region, chunk, region.getDimension() != region.getServer().getOverworld().getDimension());
+                } else {
+                    // +-
+                    generateChunkFloorNE(region, chunk);
+                }
             } else {
-                // +-
-                generateChunkFloorNE(region , chunk);
-            }
-        } else {
-            if (chunk.getPos().getEndZ() >= 0) {
-                // -+
-                generateChunkFloorSW(region , chunk);
-            } else {
-                // --
-                generateChunkFloorNW(region , chunk);
+                if (chunk.getPos().getEndZ() >= 0) {
+                    // -+
+                    generateChunkFloorSW(region, chunk, region.getDimension() != region.getServer().getOverworld().getDimension());
+                } else {
+                    // --
+                    generateChunkFloorNW(region, chunk);
+                }
             }
         }
-    }
 
     // +,+
     // this algorithm for generation *should* work in all quadrents even through its only used in one here
     // generates lines
-    protected static void generateChunkFloorSE(WorldAccess world, Chunk chunk) {
+    protected static void generateChunkFloorSE(WorldAccess world, Chunk chunk, boolean isNether) {
         int y=0;
         for (int x = chunk.getPos().getStartX(); x <= chunk.getPos().getEndX(); x++) {
                 for (int z = chunk.getPos().getStartZ(); z <= chunk.getPos().getEndZ(); z++) {
@@ -115,7 +114,7 @@ public class ChunkGenerator extends NoiseChunkGenerator {
                         BlockPos blockPos =
                                 new BlockPos(x, y, z);
                             world.setBlockState(blockPos, Blocks.BLUE_STAINED_GLASS.getDefaultState(), 2);
-                    } else if (Math.abs((x<0?x:x+1)) % 128 < 2 || Math.abs((z<0?z:z+1)) % 128 < 2) {
+                    } else if (Math.abs((x<0?x:x+1)) % (isNether?64:128) < 2 || Math.abs((z<0?z:z+1)) % (isNether?64:128) < 2) {
                         // 8x grid
                         BlockPos blockPos =
                                 new BlockPos(x, y, z);
@@ -136,7 +135,7 @@ public class ChunkGenerator extends NoiseChunkGenerator {
 
     // -,+
     // generates dots
-    protected static void generateChunkFloorSW(WorldAccess world, Chunk chunk) {
+    protected static void generateChunkFloorSW(WorldAccess world, Chunk chunk, boolean isNether) {
         int y=0;
         for (int x = chunk.getPos().getStartX(); x <= chunk.getPos().getEndX(); x++) {
             for (int z = chunk.getPos().getStartZ(); z <= chunk.getPos().getEndZ(); z++) {
@@ -145,7 +144,7 @@ public class ChunkGenerator extends NoiseChunkGenerator {
                     BlockPos blockPos =
                             new BlockPos(x, y, z);
                     world.setBlockState(blockPos, Blocks.BLUE_STAINED_GLASS.getDefaultState(), 2);
-                } else if ((Math.abs((x<0?x:x+1)) % 128 < 2 || Math.abs((z<0?z:z+1)) % 128 < 2) && (Math.abs((x<0?x:x+1)) % 16 < 2 && Math.abs((z<0?z:z+1)) % 16 < 2)) {
+                } else if ((Math.abs((x<0?x:x+1)) % (isNether?64:128) < 2 || Math.abs((z<0?z:z+1)) % (isNether?64:128) < 2) && (Math.abs((x<0?x:x+1)) % 16 < 2 && Math.abs((z<0?z:z+1)) % 16 < 2)) {
                     // 8x grid
                     BlockPos blockPos =
                             new BlockPos(x, y, z);
