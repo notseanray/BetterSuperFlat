@@ -20,6 +20,7 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -79,14 +80,14 @@ public class ChunkGenerator extends NoiseChunkGenerator {
 
         BlockPos pos =
                 new BlockPos(
-                        region.getCenterPos().getStartX(),
+                        region.getCenterChunkX(),
                         region.getHeight() - 256,
-                        region.getCenterPos().getStartZ());
+                        region.getCenterChunkZ());
 
             if (chunk.getPos().getEndX() >= 0) {
                 if (chunk.getPos().getEndZ() >= 0) {
                     // ++
-                    generateChunkFloorSE(region, chunk, region.getDimension() != region.getServer().getOverworld().getDimension());
+                    generateChunkFloorSE(region, chunk, false);
                 } else {
                     // +-
                     generateChunkFloorNE(region, chunk);
@@ -94,7 +95,7 @@ public class ChunkGenerator extends NoiseChunkGenerator {
             } else {
                 if (chunk.getPos().getEndZ() >= 0) {
                     // -+
-                    generateChunkFloorSW(region, chunk, region.getDimension() != region.getServer().getOverworld().getDimension());
+                    generateChunkFloorSW(region, chunk, false);
                 } else {
                     // --
                     generateChunkFloorNW(region, chunk);
@@ -193,11 +194,11 @@ public class ChunkGenerator extends NoiseChunkGenerator {
         }
     }
 
-    @Override
+    /* @Override
     public CompletableFuture<Chunk> populateNoise(
             Executor executor, StructureAccessor accessor, Chunk chunk) {
         return CompletableFuture.completedFuture(chunk);
-    }
+    } */
 
     @Override
     public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
@@ -210,8 +211,8 @@ public class ChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
-        ChunkPos chunkPos = region.getCenterPos();
-        BlockPos pos = new BlockPos(chunkPos.getStartX(), region.getBottomY(), chunkPos.getStartZ());
+        ChunkPos chunkPos = new ChunkPos(region.getCenterChunkX(),region.getCenterChunkZ());
+        BlockPos pos = new BlockPos(chunkPos.getStartX(), 0, chunkPos.getStartZ());
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         BlockBox box = new BlockBox(startX, 0, startZ, startX + 15, region.getHeight(), startZ + 15);

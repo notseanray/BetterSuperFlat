@@ -36,7 +36,7 @@ public class GeneratorTypes {
                     Registry<DimensionType> dimensionTypeRegistry =
                             registryManager.get(Registry.DIMENSION_TYPE_KEY);
                     Registry<ChunkGeneratorSettings> settingsRegistry =
-                            registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
+                            registryManager.get(Registry.NOISE_SETTINGS_WORLDGEN); //CHUNK_GENERATOR_SETTINGS_KEY
                     SimpleRegistry<DimensionOptions> dimensionOptionsRegistry =
                             GenerationSettings.getBetterSuperFlatDimensionOptions(
                                     dimensionTypeRegistry, biomeRegistry, settingsRegistry, seed);
