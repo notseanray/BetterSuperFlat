@@ -79,24 +79,70 @@ public class ChunkGenerator extends NoiseChunkGenerator {
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         Arrays.fill(chunk.getSectionArray(), WorldChunk.EMPTY_SECTION);
 
-            BlockPos pos =
-                    new BlockPos(
-                    region.getCenterPos().getStartX(),
-                    region.getHeight() - 256,
-                    region.getCenterPos().getStartZ());
-            generateChunkFloor(
-                    region,
-                    pos,
-                    new BlockBox(
-                            chunk.getPos().getStartX(),
-                            0,
-                            chunk.getPos().getStartZ(),
-                            chunk.getPos().getStartX() + 15,
-                            region.getHeight(),
-                            chunk.getPos().getStartZ() + 15));
+        BlockPos pos =
+                new BlockPos(
+                        region.getCenterPos().getStartX(),
+                        region.getHeight() - 256,
+                        region.getCenterPos().getStartZ());
+        generateChunkFloorSE(region , chunk);
+        /*generateChunkFloor(
+                region,
+                pos,
+                new BlockBox(
+                        chunk.getPos().getStartX(),
+                        0,
+                        chunk.getPos().getStartZ(),
+                        chunk.getPos().getStartX() + 15,
+                        region.getHeight(),
+                        chunk.getPos().getStartZ() + 15));
+         */
+    }
+
+    // +,+
+    protected static void generateChunkFloorSE(WorldAccess world, Chunk chunk) {
+        int y=0;
+        for (int x = chunk.getPos().getStartX(); x <= chunk.getPos().getEndX(); x++) {
+                for (int z = chunk.getPos().getStartZ(); z <= chunk.getPos().getEndZ(); z++) {
+                    //lines
+                    // overworld borders
+                    if (Math.abs(x) % 512 < (x > 0 ? 1 : 2) || Math.abs(z) % 512 < (z > 0 ? 1 : 2)) {
+                        // region borders
+                        BlockPos blockPos =
+                                new BlockPos(x, y, z);
+                            world.setBlockState(blockPos, Blocks.BLUE_STAINED_GLASS.getDefaultState(), 2);
+                    } else if (Math.abs(x) % 128 < (x > 0 ? 1 : 2) || Math.abs(z) % 128 < (z > 0 ? 1 : 2)) {
+                        // 8x grid
+                        BlockPos blockPos =
+                                new BlockPos(x, y, z);
+                        world.setBlockState(blockPos, Blocks.RED_STAINED_GLASS.getDefaultState(), 2);
+                    } else if (Math.abs(x) % 16 < 2 || Math.abs(z) % 16 < 2) {
+                        // full borders
+                        BlockPos blockPos =
+                                new BlockPos(x, y, z);
+                        world.setBlockState(blockPos, Blocks.LIGHT_GRAY_STAINED_GLASS.getDefaultState(), 2);
+                    } else {
+                        BlockPos blockPos =
+                                new BlockPos(x, y, z);
+                        world.setBlockState(blockPos, Blocks.WHITE_STAINED_GLASS.getDefaultState(), 2);
+                    }
+                }
             }
+        }
 
+    // -,+
+    protected static void generateChunkFloorSW() {
 
+    }
+
+    // +,-
+    protected static void generateChunkFloorNE() {
+
+    }
+
+    // -,-
+    protected static void generateChunkFloorNW() {
+
+    }
 
     @Override
     public CompletableFuture<Chunk> populateNoise(
@@ -151,7 +197,20 @@ public class ChunkGenerator extends NoiseChunkGenerator {
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 for (int z = startZ; z <= endZ; z++) {
-                    placeRelativeBlockInBox(world, block, referencePos, x, y, z, box);
+                    //lines
+                    // overworld borders
+                    if (Math.abs(x) % 512 < 2 || Math.abs(z) % 512 < 2) {
+                        // region borders
+                        placeRelativeBlockInBox(world, Blocks.BLUE_STAINED_GLASS.getDefaultState(), referencePos, x, y, z, box);
+                    } else if (Math.abs(x) % 128 < 2 || Math.abs(z) % 128 < 2) {
+                        // 8x grid
+                        placeRelativeBlockInBox(world, Blocks.RED_STAINED_GLASS.getDefaultState(), referencePos, x, y, z, box);
+                    } else if (Math.abs(x) % 16 < 2 || Math.abs(z) % 16 < 2) {
+                        // full borders
+                        placeRelativeBlockInBox(world, Blocks.LIGHT_GRAY_STAINED_GLASS.getDefaultState(), referencePos, x, y, z, box);
+                    } else {
+                        placeRelativeBlockInBox(world, block, referencePos, x, y, z, box);
+                    }
                 }
             }
         }
@@ -159,17 +218,6 @@ public class ChunkGenerator extends NoiseChunkGenerator {
 
     protected static void generateChunkFloor(ServerWorldAccess world, BlockPos pos, BlockBox box) {
         fillRelativeBlockInBox(
-                world, Blocks.WHITE_CONCRETE.getDefaultState(), pos, 1,0,1,14,0,14,box);
-        fillRelativeBlockInBox(
-                world, Blocks.WHITE_WOOL.getDefaultState(), pos, 1,0,0,15,0,0,box);
-        fillRelativeBlockInBox(
-                world, Blocks.WHITE_WOOL.getDefaultState(), pos, 0,0,0,0,0,15,box);
-        fillRelativeBlockInBox(
-                world, Blocks.WHITE_WOOL.getDefaultState(), pos, 15,0,1,15,0,15,box);
-        fillRelativeBlockInBox(
-                world, Blocks.WHITE_WOOL.getDefaultState(), pos, 1,0,15,14,0,15,box);
-        fillRelativeBlockInBox(
-                world, Blocks.BARRIER.getDefaultState(), pos, 0,1,0,15,1,15,box);
-
+                world, Blocks.WHITE_STAINED_GLASS.getDefaultState(), pos, 0, 0, 0, 15, 0, 15, box);
     }
 }
