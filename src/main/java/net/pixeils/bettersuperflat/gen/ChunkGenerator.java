@@ -10,13 +10,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -85,37 +83,44 @@ public class ChunkGenerator extends NoiseChunkGenerator {
                         region.getHeight() - 256,
                         region.getCenterPos().getStartZ());
         generateChunkFloorSE(region , chunk);
-        /*generateChunkFloor(
-                region,
-                pos,
-                new BlockBox(
-                        chunk.getPos().getStartX(),
-                        0,
-                        chunk.getPos().getStartZ(),
-                        chunk.getPos().getStartX() + 15,
-                        region.getHeight(),
-                        chunk.getPos().getStartZ() + 15));
-         */
+
+        if (chunk.getPos().getEndX() >= 0) {
+            if (chunk.getPos().getEndZ() >= 0) {
+                // ++
+                generateChunkFloorSE(region , chunk);
+            } else {
+                // +-
+                generateChunkFloorNE(region , chunk);
+            }
+        } else {
+            if (chunk.getPos().getEndZ() >= 0) {
+                // -+
+                generateChunkFloorSW(region , chunk);
+            } else {
+                // --
+                generateChunkFloorNW(region , chunk);
+            }
+        }
     }
 
     // +,+
+    // this algorithm for generation *should* work in all quadrents even through its only used in one here
+    // generates lines
     protected static void generateChunkFloorSE(WorldAccess world, Chunk chunk) {
         int y=0;
         for (int x = chunk.getPos().getStartX(); x <= chunk.getPos().getEndX(); x++) {
                 for (int z = chunk.getPos().getStartZ(); z <= chunk.getPos().getEndZ(); z++) {
-                    //lines
-                    // overworld borders
-                    if (Math.abs(x) % 512 < (x > 0 ? 1 : 2) || Math.abs(z) % 512 < (z > 0 ? 1 : 2)) {
+                    if (Math.abs((x<0?x:x+1)) % 512 < 2 || Math.abs((z<0?z:z+1)) % 512 < 2) {
                         // region borders
                         BlockPos blockPos =
                                 new BlockPos(x, y, z);
                             world.setBlockState(blockPos, Blocks.BLUE_STAINED_GLASS.getDefaultState(), 2);
-                    } else if (Math.abs(x) % 128 < (x > 0 ? 1 : 2) || Math.abs(z) % 128 < (z > 0 ? 1 : 2)) {
+                    } else if (Math.abs((x<0?x:x+1)) % 128 < 2 || Math.abs((z<0?z:z+1)) % 128 < 2) {
                         // 8x grid
                         BlockPos blockPos =
                                 new BlockPos(x, y, z);
                         world.setBlockState(blockPos, Blocks.RED_STAINED_GLASS.getDefaultState(), 2);
-                    } else if (Math.abs(x) % 16 < 2 || Math.abs(z) % 16 < 2) {
+                    } else if (Math.abs((x<0?x:x+1)) % 16 < 2 || Math.abs((z<0?z:z+1)) % 16 < 2) {
                         // full borders
                         BlockPos blockPos =
                                 new BlockPos(x, y, z);
@@ -130,18 +135,63 @@ public class ChunkGenerator extends NoiseChunkGenerator {
         }
 
     // -,+
-    protected static void generateChunkFloorSW() {
-
+    // generates dots
+    protected static void generateChunkFloorSW(WorldAccess world, Chunk chunk) {
+        int y=0;
+        for (int x = chunk.getPos().getStartX(); x <= chunk.getPos().getEndX(); x++) {
+            for (int z = chunk.getPos().getStartZ(); z <= chunk.getPos().getEndZ(); z++) {
+                if ((Math.abs((x<0?x:x+1)) % 512 < 2 || Math.abs((z<0?z:z+1)) % 512 < 2) && (Math.abs((x<0?x:x+1)) % 16 < 2 && Math.abs((z<0?z:z+1)) % 16 < 2))  {
+                    // region borders
+                    BlockPos blockPos =
+                            new BlockPos(x, y, z);
+                    world.setBlockState(blockPos, Blocks.BLUE_STAINED_GLASS.getDefaultState(), 2);
+                } else if ((Math.abs((x<0?x:x+1)) % 128 < 2 || Math.abs((z<0?z:z+1)) % 128 < 2) && (Math.abs((x<0?x:x+1)) % 16 < 2 && Math.abs((z<0?z:z+1)) % 16 < 2)) {
+                    // 8x grid
+                    BlockPos blockPos =
+                            new BlockPos(x, y, z);
+                    world.setBlockState(blockPos, Blocks.RED_STAINED_GLASS.getDefaultState(), 2);
+                } else if (Math.abs((x<0?x:x+1)) % 16 < 2 && Math.abs((z<0?z:z+1)) % 16 < 2) {
+                    // full borders
+                    BlockPos blockPos =
+                            new BlockPos(x, y, z);
+                    world.setBlockState(blockPos, Blocks.LIGHT_GRAY_STAINED_GLASS.getDefaultState(), 2);
+                } else {
+                    BlockPos blockPos =
+                            new BlockPos(x, y, z);
+                    world.setBlockState(blockPos, Blocks.WHITE_STAINED_GLASS.getDefaultState(), 2);
+                }
+            }
+        }
     }
 
     // +,-
-    protected static void generateChunkFloorNE() {
-
+    // generates region borders
+    protected static void generateChunkFloorNE(WorldAccess world, Chunk chunk) {
+        int y=0;
+        for (int x = chunk.getPos().getStartX(); x <= chunk.getPos().getEndX(); x++) {
+            for (int z = chunk.getPos().getStartZ(); z <= chunk.getPos().getEndZ(); z++) {
+                if (Math.abs((x<0?x:x+1)) % 512 < 2 || Math.abs((z<0?z:z+1)) % 512 < 2) {
+                    // region borders
+                    BlockPos blockPos =
+                            new BlockPos(x, y, z);
+                    world.setBlockState(blockPos, Blocks.BLUE_STAINED_GLASS.getDefaultState(), 2);
+                } else {
+                    BlockPos blockPos =
+                            new BlockPos(x, y, z);
+                    world.setBlockState(blockPos, Blocks.WHITE_STAINED_GLASS.getDefaultState(), 2);
+                }
+            }
+        }
     }
 
     // -,-
-    protected static void generateChunkFloorNW() {
-
+    // generates white floor lol
+    protected static void generateChunkFloorNW(WorldAccess world, Chunk chunk) {
+        for (int x = chunk.getPos().getStartX(); x <= chunk.getPos().getEndX(); x++) {
+            for (int z = chunk.getPos().getStartZ(); z <= chunk.getPos().getEndZ(); z++) {
+                world.setBlockState(new BlockPos(x, 0, z), Blocks.WHITE_STAINED_GLASS.getDefaultState(), 2);
+            }
+        }
     }
 
     @Override
@@ -166,58 +216,5 @@ public class ChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         BlockBox box = new BlockBox(startX, 0, startZ, startX + 15, region.getHeight(), startZ + 15);
-    }
-
-    protected static void placeRelativeBlockInBox(
-            WorldAccess world,
-            BlockState block,
-            BlockPos referencePos,
-            int x,
-            int y,
-            int z,
-            BlockBox box) {
-        BlockPos blockPos =
-                new BlockPos(referencePos.getX() + x, referencePos.getY() + y, referencePos.getZ() + z);
-        if (box.contains(blockPos)) {
-            world.setBlockState(blockPos, block, 2);
-        }
-    }
-
-    protected static void fillRelativeBlockInBox(
-            WorldAccess world,
-            BlockState block,
-            BlockPos referencePos,
-            int startX,
-            int startY,
-            int startZ,
-            int endX,
-            int endY,
-            int endZ,
-            BlockBox box) {
-        for (int x = startX; x <= endX; x++) {
-            for (int y = startY; y <= endY; y++) {
-                for (int z = startZ; z <= endZ; z++) {
-                    //lines
-                    // overworld borders
-                    if (Math.abs(x) % 512 < 2 || Math.abs(z) % 512 < 2) {
-                        // region borders
-                        placeRelativeBlockInBox(world, Blocks.BLUE_STAINED_GLASS.getDefaultState(), referencePos, x, y, z, box);
-                    } else if (Math.abs(x) % 128 < 2 || Math.abs(z) % 128 < 2) {
-                        // 8x grid
-                        placeRelativeBlockInBox(world, Blocks.RED_STAINED_GLASS.getDefaultState(), referencePos, x, y, z, box);
-                    } else if (Math.abs(x) % 16 < 2 || Math.abs(z) % 16 < 2) {
-                        // full borders
-                        placeRelativeBlockInBox(world, Blocks.LIGHT_GRAY_STAINED_GLASS.getDefaultState(), referencePos, x, y, z, box);
-                    } else {
-                        placeRelativeBlockInBox(world, block, referencePos, x, y, z, box);
-                    }
-                }
-            }
-        }
-    }
-
-    protected static void generateChunkFloor(ServerWorldAccess world, BlockPos pos, BlockBox box) {
-        fillRelativeBlockInBox(
-                world, Blocks.WHITE_STAINED_GLASS.getDefaultState(), pos, 0, 0, 0, 15, 0, 15, box);
     }
 }
