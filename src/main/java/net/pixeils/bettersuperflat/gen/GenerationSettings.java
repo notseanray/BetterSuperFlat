@@ -5,6 +5,8 @@ import com.mojang.serialization.Lifecycle;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
@@ -48,7 +50,7 @@ public class GenerationSettings {
   public static net.minecraft.world.gen.chunk.ChunkGenerator createOverworldGenerator(
       Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> settingsRegistry, long seed) {
     return new ChunkGenerator(
-        new VanillaLayeredBiomeSource(seed, false, false, biomeRegistry),
+        new FixedBiomeSource(biomeRegistry.get(BiomeKeys.THE_VOID)),
         seed,
         () -> settingsRegistry.getOrThrow(ChunkGeneratorSettings.OVERWORLD));
   }
@@ -56,7 +58,7 @@ public class GenerationSettings {
   public static net.minecraft.world.gen.chunk.ChunkGenerator createNetherGenerator(
       Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> settingsRegistry, long seed) {
     return new ChunkGenerator(
-        MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(biomeRegistry, seed),
+            new FixedBiomeSource(biomeRegistry.get(BiomeKeys.THE_VOID)),
         seed,
         () -> settingsRegistry.getOrThrow(ChunkGeneratorSettings.NETHER));
   }
@@ -64,7 +66,7 @@ public class GenerationSettings {
   public static net.minecraft.world.gen.chunk.ChunkGenerator createEndGenerator(
       Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> settingsRegistry, long seed) {
     return new ChunkGenerator(
-        new TheEndBiomeSource(biomeRegistry, seed),
+            new FixedBiomeSource(biomeRegistry.get(BiomeKeys.THE_VOID)),
         seed,
         () -> settingsRegistry.getOrThrow(ChunkGeneratorSettings.END));
   }
