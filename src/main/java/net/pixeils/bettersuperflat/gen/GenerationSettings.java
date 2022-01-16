@@ -1,7 +1,10 @@
 package net.pixeils.bettersuperflat.gen;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.mojang.serialization.Lifecycle;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.biome.Biome;
@@ -12,12 +15,11 @@ import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
-import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.chunk.StructuresConfig;
+import net.minecraft.world.gen.chunk.*;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class GenerationSettings {
 
@@ -54,10 +56,32 @@ public class GenerationSettings {
 
   public static net.minecraft.world.gen.chunk.ChunkGenerator createOverworldGenerator(
       Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> settingsRegistry, long seed) {
-    System.out.println("before where i think it breaks");
-    StructuresConfig conf = new StructuresConfig(Optional.ofNullable(StructuresConfig.DEFAULT_STRONGHOLD), StructuresConfig.DEFAULT_STRUCTURES);
-    return new BetterFlatChunkGen(new FlatChunkGeneratorConfig(conf,biomeRegistry));
+    // this emulates the getDefaultConfig method
+    StructuresConfig structConf = new StructuresConfig(Optional.ofNullable(StructuresConfig.DEFAULT_STRONGHOLD), Maps.newHashMap(ImmutableMap.of(StructureFeature.VILLAGE, StructuresConfig.DEFAULT_STRUCTURES.get(StructureFeature.VILLAGE))));
+    FlatChunkGeneratorConfig chunkConf = new FlatChunkGeneratorConfig(structConf,biomeRegistry);
+    chunkConf.setBiome(() -> biomeRegistry.get(BiomeKeys.THE_VOID));
+    FlatChunkGeneratorLayer layer = new FlatChunkGeneratorLayer(1, Blocks.BLACK_STAINED_GLASS);
+    chunkConf.getLayers().add(layer);
+    return new BetterFlatChunkGen(chunkConf);
+    //return new BetterFlatChunkGen(FlatChunkGeneratorConfig.getDefaultConfig(biomeRegistry));
   }
+
+  /*
+
+  public static FlatLevelGeneratorSettings getDefault(Registry<Biome> lvt0) {
+      StructureSettings structuresettings = new StructureSettings(Optional.of(StructureSettings.DEFAULT_STRONGHOLD), Maps.newHashMap(ImmutableMap.of(StructureFeature.VILLAGE, StructureSettings.DEFAULTS.get(StructureFeature.VILLAGE))));
+      FlatLevelGeneratorSettings flatlevelgeneratorsettings = new FlatLevelGeneratorSettings(structuresettings, lvt0);
+      flatlevelgeneratorsettings.biome = () -> {
+         return lvt0.getOrThrow(Biomes.PLAINS);
+      };
+      flatlevelgeneratorsettings.getLayersInfo().add(new FlatLayerInfo(1, Blocks.BEDROCK));
+      flatlevelgeneratorsettings.getLayersInfo().add(new FlatLayerInfo(2, Blocks.DIRT));
+      flatlevelgeneratorsettings.getLayersInfo().add(new FlatLayerInfo(1, Blocks.GRASS_BLOCK));
+      flatlevelgeneratorsettings.updateLayers();
+      return flatlevelgeneratorsettings;
+   }
+
+   */
 
   public static net.minecraft.world.gen.chunk.ChunkGenerator createNetherGenerator(
       Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> settingsRegistry, long seed) {

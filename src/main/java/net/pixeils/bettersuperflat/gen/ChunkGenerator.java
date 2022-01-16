@@ -191,12 +191,6 @@ public class ChunkGenerator extends NoiseChunkGenerator {
         }
     }
 
-    /* @Override
-    public CompletableFuture<Chunk> populateNoise(
-            Executor executor, StructureAccessor accessor, Chunk chunk) {
-        return CompletableFuture.completedFuture(chunk);
-    } */
-
     @Override
     public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
     }
