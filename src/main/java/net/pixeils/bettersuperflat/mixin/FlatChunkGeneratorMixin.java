@@ -1,55 +1,22 @@
-package net.pixeils.bettersuperflat.gen;
+package net.pixeils.bettersuperflat.mixin;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.FlatChunkGenerator;
-import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
-public class BetterFlatChunkGen extends FlatChunkGenerator {
+@Mixin(FlatChunkGenerator.class)
+public class FlatChunkGeneratorMixin {
 
-    private long seed;
-    private BiomeSource biomeSource;
+    /**
+     * @author sylkos
+     */
 
-    public static final Codec<BetterFlatChunkGen> CODEC =
-            RecordCodecBuilder.create(
-                    (instance) ->
-                            instance
-                                    .group(
-                                            BiomeSource.CODEC
-                                                    .fieldOf("biome_source")
-                                                    .forGetter(BetterFlatChunkGen::getBiomeSource),
-                                            Codec.LONG
-                                                    .fieldOf("seed")
-                                                    .stable()
-                                                    .forGetter(BetterFlatChunkGen::getSeed),
-                                            FlatChunkGeneratorConfig.CODEC
-                                                    .fieldOf("settings")
-                                                    .forGetter(BetterFlatChunkGen::getConfig))
-                                    .apply(instance, instance.stable(BetterFlatChunkGen::new)));
-
-    public BetterFlatChunkGen(BiomeSource biomeSource, Long seed, FlatChunkGeneratorConfig flatChunkGeneratorConfig) {
-        super(flatChunkGeneratorConfig);
-        this.seed = seed;
-        this.biomeSource = biomeSource;
-    }
-
-    public long getSeed() {
-        return this.seed;
-    }
-
-    @Override
-    protected Codec<? extends net.minecraft.world.gen.chunk.ChunkGenerator> getCodec() {
-        return CODEC;
-    }
-
-    @Override
+    @Overwrite
     public void populateNoise(WorldAccess world, StructureAccessor structureAccessor, Chunk chunk) {
         for (int j = 0; j < 16; ++j) {
             for (int k = 0; k < 16; ++k) {

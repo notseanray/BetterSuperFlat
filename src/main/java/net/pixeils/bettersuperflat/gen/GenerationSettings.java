@@ -62,7 +62,7 @@ public class GenerationSettings {
     chunkConf.setBiome(() -> biomeRegistry.get(BiomeKeys.THE_VOID));
     FlatChunkGeneratorLayer layer = new FlatChunkGeneratorLayer(1, Blocks.BLACK_STAINED_GLASS); // this is temporary and means it doesnt work
     chunkConf.getLayers().add(layer);
-    return new BetterFlatChunkGen(new FixedBiomeSource(biomeRegistry.get(BiomeKeys.THE_VOID)), seed, chunkConf);
+    return new FlatChunkGenerator(chunkConf);
   }
 
   public static net.minecraft.world.gen.chunk.ChunkGenerator createNetherGenerator(
