@@ -1,4 +1,4 @@
-package net.pixeils.bettersuperflat.mixin;
+/* package net.pixeils.bettersuperflat.mixin;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -13,30 +13,29 @@ import org.spongepowered.asm.mixin.Overwrite;
 @Mixin(FlatChunkGenerator.class)
 public class FlatWorldGen {
 
-    /**
-     * @author sylkos
-     */
+//@author sylkos
+
     @Overwrite
     public void populateNoise(WorldAccess lvt1, StructureAccessor lvt2, Chunk lvt3) {
         for (int j = 0; j < 16; ++j) {
             for (int k = 0; k < 16; ++k) {
                 ChunkPos pos = lvt3.getPos();
                 //lines
-                if (pos.x >= 0 && pos.z >= 0) {
+                if(pos.x >= 0 && pos.z >= 0) {
                     // won't work in negative coords but atm im beyond caring because this is already a hacky solution
                     int j2 = j + 16 * lvt3.getPos().x;
                     int k2 = k + 16 * lvt3.getPos().z;
-                    if (Math.abs((j < 0 ? j2 : j2 + 1)) % 512 < 2 || Math.abs((k < 0 ? k2 : k2 + 1)) % 512 < 2) {
+                    if (Math.abs((j<0?j2:j2+1)) % 512 < 2 || Math.abs((k<0?k2:k2+1)) % 512 < 2) {
                         // region borders
                         BlockPos blockPos =
                                 new BlockPos(j, 0, k);
                         lvt3.setBlockState(blockPos, Blocks.BLUE_STAINED_GLASS.getDefaultState(), false);
-                    } else if (Math.abs((j < 0 ? j2 : j2 + 1)) % (128) < 2 || Math.abs((k < 0 ? k2 : k2 + 1)) % (128) < 2) {
+                    } else if (Math.abs((j<0?j2:j2+1)) % (128) < 2 || Math.abs((k<0?k2:k2+1)) % (128) < 2) {
                         // 8x grid
                         BlockPos blockPos =
                                 new BlockPos(j, 0, k);
                         lvt3.setBlockState(blockPos, Blocks.RED_STAINED_GLASS.getDefaultState(), false);
-                    } else if (Math.abs((j < 0 ? j2 : j2 + 1)) % 16 < 2 || Math.abs((k < 0 ? k2 : k2 + 1)) % 16 < 2) {
+                    } else if (Math.abs((j<0?j2:j2+1)) % 16 < 2 || Math.abs((k<0?k2:k2+1)) % 16 < 2) {
                         // full borders
                         BlockPos blockPos =
                                 new BlockPos(j, 0, k);
@@ -48,10 +47,10 @@ public class FlatWorldGen {
                     }
                 }
                 //borders
-                if (pos.x >= 0 && pos.z < 0) {
+                if(pos.x >= 0 && pos.z < 0) {
                     int j2 = j + 16 * lvt3.getPos().x;
                     int k2 = k - 16 * lvt3.getPos().z;
-                    if (Math.abs(pos.x + 1) % 32 == 0 && j == 15 || (Math.abs(pos.x) % 32 == 0) && j == 0 || Math.abs(pos.z + 1) % 32 == 0 && k == 15 || (Math.abs(pos.z) % 32 == 0) && k == 0) {
+                    if (Math.abs(pos.x+1) % 32 == 0 && j == 15 || (Math.abs(pos.x) % 32 == 0) && j == 0 || Math.abs(pos.z+1) % 32 == 0 && k == 15 || (Math.abs(pos.z) % 32 == 0) && k == 0) {
                         // region borders
                         BlockPos blockPos =
                                 new BlockPos(j, 0, k);
@@ -63,19 +62,21 @@ public class FlatWorldGen {
                     }
                 }
                 //dots
-                if (pos.x < 0 && pos.z >= 0) {
+                if(pos.x < 0 && pos.z >= 0) {
                     // almost works lol
-                    if ((Math.abs(pos.x + 1) % 32 == 0 || Math.abs(pos.x) % 32 == 0 || Math.abs(pos.z + 1) % 32 == 0 || Math.abs(pos.z) % 32 == 0) && (j == 15 || j == 0) && (k == 15 || k == 0)) {
+                    int j2 = j + 16 * lvt3.getPos().x;
+                    int k2 = k + 16 * lvt3.getPos().z;
+                    if (Math.abs((j<0?j2:j2+1)) % 512 < 2 && Math.abs((k<0?k2:k2+1)) % 512 < 2) {
                         // region borders
                         BlockPos blockPos =
                                 new BlockPos(j, 0, k);
                         lvt3.setBlockState(blockPos, Blocks.BLUE_STAINED_GLASS.getDefaultState(), false);
-                    } else if ((Math.abs(pos.x + 1) % 8 == 0 || Math.abs(pos.x) % 8 == 0 || Math.abs(pos.z + 1) % 8 == 0 || Math.abs(pos.z) % 8 == 0) && (j == 15 || j == 0) && (k == 15 || k == 0)) {
+                    } else if (Math.abs((j<0?j2:j2+1)) % (128) < 2 && Math.abs((k<0?k2:k2+1)) % (128) < 2) {
                         // 8x grid
                         BlockPos blockPos =
                                 new BlockPos(j, 0, k);
                         lvt3.setBlockState(blockPos, Blocks.RED_STAINED_GLASS.getDefaultState(), false);
-                    } else if ((j == 15 || j == 0) && (k == 15 || k == 0)) {
+                    } else if (Math.abs((j<0?j2:j2+1)) % 16 < 2 && Math.abs((k<0?k2:k2+1)) % 16 < 2) {
                         // full borders
                         BlockPos blockPos =
                                 new BlockPos(j, 0, k);
@@ -87,10 +88,10 @@ public class FlatWorldGen {
                     }
                 }
                 //none
-                if (pos.x < 0 && pos.z < 0) {
-                    lvt3.setBlockState(new BlockPos(j, 0, k), Blocks.WHITE_STAINED_GLASS.getDefaultState(), false);
+                if(pos.x < 0 && pos.z < 0) {
+                    lvt3.setBlockState(new BlockPos(j,0,k), Blocks.WHITE_STAINED_GLASS.getDefaultState(),false);
                 }
             }
         }
     }
-}
+} */

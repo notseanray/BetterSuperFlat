@@ -3,8 +3,7 @@
   "package": "net.pixeils.bettersuperflat.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "GeneratorOptionsMixin",
-    "FlatWorldGen"
+    "GeneratorOptionsMixin"
   ],
   "client": [
     "GeneratorTypeAccessor"
