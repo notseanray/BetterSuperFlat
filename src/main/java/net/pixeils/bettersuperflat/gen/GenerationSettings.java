@@ -13,6 +13,11 @@ import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
+import net.minecraft.world.gen.chunk.StructureConfig;
+import net.minecraft.world.gen.chunk.StructuresConfig;
+
+import java.util.Optional;
 
 public class GenerationSettings {
 
@@ -49,10 +54,9 @@ public class GenerationSettings {
 
   public static net.minecraft.world.gen.chunk.ChunkGenerator createOverworldGenerator(
       Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> settingsRegistry, long seed) {
-    return new ChunkGenerator(
-        new FixedBiomeSource(biomeRegistry.get(BiomeKeys.THE_VOID)),
-        seed,
-        () -> settingsRegistry.getOrThrow(ChunkGeneratorSettings.OVERWORLD));
+    System.out.println("before where i think it breaks");
+    StructuresConfig conf = new StructuresConfig(Optional.ofNullable(StructuresConfig.DEFAULT_STRONGHOLD), StructuresConfig.DEFAULT_STRUCTURES);
+    return new BetterFlatChunkGen(new FlatChunkGeneratorConfig(conf,biomeRegistry));
   }
 
   public static net.minecraft.world.gen.chunk.ChunkGenerator createNetherGenerator(
