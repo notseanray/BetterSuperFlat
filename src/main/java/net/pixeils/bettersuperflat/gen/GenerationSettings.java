@@ -31,7 +31,7 @@ public class GenerationSettings {
       Registry<ChunkGeneratorSettings> settingsRegistry,
       long seed) {
     SimpleRegistry<DimensionOptions> simpleRegistry =
-        new SimpleRegistry<>(Registry.DIMENSION_KEY, Lifecycle.experimental());
+        new SimpleRegistry<>(Registry.DIMENSION_KEY, Lifecycle.stable());
     simpleRegistry.add(
         DimensionOptions.OVERWORLD,
         new DimensionOptions(
@@ -64,23 +64,6 @@ public class GenerationSettings {
     chunkConf.getLayers().add(layer);
     return new BetterFlatChunkGen(new FixedBiomeSource(biomeRegistry.get(BiomeKeys.THE_VOID)), seed, chunkConf);
   }
-
-  /*
-
-  public static FlatLevelGeneratorSettings getDefault(Registry<Biome> lvt0) {
-      StructureSettings structuresettings = new StructureSettings(Optional.of(StructureSettings.DEFAULT_STRONGHOLD), Maps.newHashMap(ImmutableMap.of(StructureFeature.VILLAGE, StructureSettings.DEFAULTS.get(StructureFeature.VILLAGE))));
-      FlatLevelGeneratorSettings flatlevelgeneratorsettings = new FlatLevelGeneratorSettings(structuresettings, lvt0);
-      flatlevelgeneratorsettings.biome = () -> {
-         return lvt0.getOrThrow(Biomes.PLAINS);
-      };
-      flatlevelgeneratorsettings.getLayersInfo().add(new FlatLayerInfo(1, Blocks.BEDROCK));
-      flatlevelgeneratorsettings.getLayersInfo().add(new FlatLayerInfo(2, Blocks.DIRT));
-      flatlevelgeneratorsettings.getLayersInfo().add(new FlatLayerInfo(1, Blocks.GRASS_BLOCK));
-      flatlevelgeneratorsettings.updateLayers();
-      return flatlevelgeneratorsettings;
-   }
-
-   */
 
   public static net.minecraft.world.gen.chunk.ChunkGenerator createNetherGenerator(
       Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> settingsRegistry, long seed) {
