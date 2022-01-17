@@ -58,11 +58,11 @@ public class GenerationSettings {
       Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> settingsRegistry, long seed) {
     // this emulates the getDefaultConfig method
     StructuresConfig structConf = new StructuresConfig(Optional.ofNullable(StructuresConfig.DEFAULT_STRONGHOLD), Maps.newHashMap(ImmutableMap.of(StructureFeature.VILLAGE, StructuresConfig.DEFAULT_STRUCTURES.get(StructureFeature.VILLAGE))));
-    FlatChunkGeneratorConfig chunkConf = new FlatChunkGeneratorConfig(structConf,biomeRegistry);
-    // chunkConf.setBiome(() -> biomeRegistry.get(BiomeKeys.THE_VOID));
+    FlatChunkGeneratorConfig flatChunkGeneratorConfig = new FlatChunkGeneratorConfig(structConf,biomeRegistry);
+    flatChunkGeneratorConfig.setBiome(() -> biomeRegistry.get(BiomeKeys.THE_VOID));
     FlatChunkGeneratorLayer layer = new FlatChunkGeneratorLayer(1, Blocks.BLACK_STAINED_GLASS); // this is temporary and means it doesnt work
-    chunkConf.getLayers().add(layer);
-    return new FlatChunkGenerator(chunkConf);
+    flatChunkGeneratorConfig.getLayers().add(layer);
+    return new FlatChunkGenerator(flatChunkGeneratorConfig);
   }
 
   public static net.minecraft.world.gen.chunk.ChunkGenerator createNetherGenerator(
