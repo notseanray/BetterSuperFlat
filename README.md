@@ -7,7 +7,7 @@ Select the `BetterSuperFlat` generation option in the create world screen.
 
 
 ### Usage Multiplayer:
-In the `server.properties` change `level-type=default` to `level-type=bettersuperflat`
+In the `server.properties` change `level-type=default` to `level-type=quaconcmp`
 
 #### Does the following:
 - All dimensions are void with barrier block floor ontop of chunk outlines
