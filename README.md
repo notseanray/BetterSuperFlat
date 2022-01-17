@@ -1,5 +1,7 @@
 ## Better Better Super Flat
 
+Just... Don't use this. It's a hacky solution that technically works but should not be on any client because it compeletely breaks superflat worlds. The 1.17 version will be updated (and be much better) once quacon updates.
+
 ### Usage SinglePlayer:
 Select the `BetterSuperFlat` generation option in the create world screen.
 
