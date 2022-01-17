@@ -59,7 +59,8 @@ public class GenerationSettings {
     // this emulates the getDefaultConfig method
     StructuresConfig structConf = new StructuresConfig(Optional.ofNullable(StructuresConfig.DEFAULT_STRONGHOLD), Maps.newHashMap(ImmutableMap.of(StructureFeature.VILLAGE, StructuresConfig.DEFAULT_STRUCTURES.get(StructureFeature.VILLAGE))));
     FlatChunkGeneratorConfig flatChunkGeneratorConfig = new FlatChunkGeneratorConfig(structConf,biomeRegistry);
-    flatChunkGeneratorConfig.setBiome(() -> biomeRegistry.get(BiomeKeys.THE_VOID));
+    // broken in 1.16.5, WILL work in 1.17
+    // flatChunkGeneratorConfig.setBiome(() -> biomeRegistry.get(BiomeKeys.THE_VOID));
     FlatChunkGeneratorLayer layer = new FlatChunkGeneratorLayer(1, Blocks.BLACK_STAINED_GLASS); // this is temporary and means it doesnt work
     flatChunkGeneratorConfig.getLayers().add(layer);
     return new FlatChunkGenerator(flatChunkGeneratorConfig);
