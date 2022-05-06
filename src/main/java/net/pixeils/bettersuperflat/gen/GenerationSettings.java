@@ -14,7 +14,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class GenerationSettings {
 
-  public static final String NAME = "quaconcmp";
+  public static final String NAME = "void";
 
   public static SimpleRegistry<DimensionOptions> getBetterSuperFlatDimensionOptions(
       Registry<DimensionType> dimensionTypeRegistry,

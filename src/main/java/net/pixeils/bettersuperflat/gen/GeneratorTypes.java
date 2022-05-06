@@ -16,7 +16,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Environment(EnvType.CLIENT)
 public class GeneratorTypes {
-    public static final GeneratorType BETTERSUPERFLAT = new GeneratorType("quaconcmp") {
+    public static final GeneratorType BETTERSUPERFLAT = new GeneratorType("void") {
                 @Override
                 protected ChunkGenerator getChunkGenerator(
                         Registry<Biome> biomeRegistry,
@@ -41,7 +41,7 @@ public class GeneratorTypes {
                             GenerationSettings.getBetterSuperFlatDimensionOptions(
                                     dimensionTypeRegistry, biomeRegistry, settingsRegistry, seed);
                     return new GeneratorOptions(
-                            seed, generateStructures, bonusChest, dimensionOptionsRegistry);
+                            0, generateStructures, bonusChest, dimensionOptionsRegistry);
                 }
             };
 }
