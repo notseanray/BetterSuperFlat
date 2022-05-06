@@ -17,31 +17,29 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 @Environment(EnvType.CLIENT)
 public class GeneratorTypes {
     public static final GeneratorType BETTERSUPERFLAT = new GeneratorType("void") {
-                @Override
-                protected ChunkGenerator getChunkGenerator(
-                        Registry<Biome> biomeRegistry,
-                        Registry<ChunkGeneratorSettings> chunkGeneratorSettingsRegistry,
-                        long seed) {
-                    return GenerationSettings.createOverworldGenerator(
-                            biomeRegistry, chunkGeneratorSettingsRegistry, seed);
-                }
+        @Override
+        protected ChunkGenerator getChunkGenerator(
+                Registry<Biome> biomeRegistry,
+                Registry<ChunkGeneratorSettings> chunkGeneratorSettingsRegistry,
+                long seed
+        ) {
+            return GenerationSettings.createOverworldGenerator(biomeRegistry, chunkGeneratorSettingsRegistry, seed);
+        }
 
-                @Override
-                public GeneratorOptions createDefaultOptions(
-                        DynamicRegistryManager.Impl registryManager,
-                        long seed,
-                        boolean generateStructures,
-                        boolean bonusChest) {
-                    Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
-                    Registry<DimensionType> dimensionTypeRegistry =
-                            registryManager.get(Registry.DIMENSION_TYPE_KEY);
-                    Registry<ChunkGeneratorSettings> settingsRegistry =
-                            registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
-                    SimpleRegistry<DimensionOptions> dimensionOptionsRegistry =
-                            GenerationSettings.getBetterSuperFlatDimensionOptions(
-                                    dimensionTypeRegistry, biomeRegistry, settingsRegistry, seed);
-                    return new GeneratorOptions(
-                            0, generateStructures, bonusChest, dimensionOptionsRegistry);
-                }
-            };
+        @Override
+        public GeneratorOptions createDefaultOptions(
+                DynamicRegistryManager.Impl registryManager,
+                long seed,
+                boolean generateStructures,
+                boolean bonusChest
+        ) {
+            Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
+            Registry<DimensionType> dimensionTypeRegistry = registryManager.get(Registry.DIMENSION_TYPE_KEY);
+            Registry<ChunkGeneratorSettings> settingsRegistry = registryManager
+                    .get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
+            SimpleRegistry<DimensionOptions> dimensionOptionsRegistry = GenerationSettings
+                    .getBetterSuperFlatDimensionOptions(dimensionTypeRegistry, biomeRegistry, settingsRegistry, seed);
+            return new GeneratorOptions(0, generateStructures, bonusChest, dimensionOptionsRegistry);
+        }
+    };
 }

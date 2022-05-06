@@ -27,24 +27,15 @@ public class ChunkGenerator extends NoiseChunkGenerator {
     private final long seed;
 
     public static final Codec<ChunkGenerator> CODEC =
-            RecordCodecBuilder.create(
-                    (instance) ->
-                            instance
-                                    .group(
-                                            BiomeSource.CODEC
-                                                    .fieldOf("biome_source")
-                                                    .forGetter(ChunkGenerator::getBiomeSource),
-                                            Codec.LONG
-                                                    .fieldOf("seed")
-                                                    .stable()
-                                                    .forGetter(ChunkGenerator::getSeed),
-                                            ChunkGeneratorSettings.REGISTRY_CODEC
-                                                    .fieldOf("settings")
-                                                    .forGetter(ChunkGenerator::getSettings))
-                                    .apply(instance, instance.stable(ChunkGenerator::new)));
+            RecordCodecBuilder.create((instance) -> instance.group(
+                    BiomeSource.CODEC.fieldOf("biome_source").forGetter(ChunkGenerator::getBiomeSource),
+                    Codec.LONG.fieldOf("seed").stable().forGetter(ChunkGenerator::getSeed),
+                    ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings")
+                            .forGetter(ChunkGenerator::getSettings)).apply(instance, instance.stable(ChunkGenerator::new)
+                    )
+                );
 
-    public ChunkGenerator(
-            BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings) {
+    public ChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings) {
         super(biomeSource, seed, settings);
         this.seed = seed;
     }
@@ -82,8 +73,7 @@ public class ChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public CompletableFuture<Chunk> populateNoise(
-            Executor executor, StructureAccessor accessor, Chunk chunk) {
+    public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
